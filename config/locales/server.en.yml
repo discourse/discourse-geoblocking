@@ -1,0 +1,6 @@
+en:
+  site_settings:
+    geoblocking_enabled: "Restrict access to content based upon the user's geographical location"
+    geoblocking_countries: "List of country codes (ISO 3166) that are blocked"
+  geoblocking:
+    blocked: 'Access forbidden based on location.'
