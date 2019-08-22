@@ -20,8 +20,7 @@ class GeoblockingMiddleware
 
     if info = DiscourseIpInfo.get(env['REMOTE_ADDR']).presence
       if country_code = info[:country_code].presence
-        countries = SiteSetting.geoblocking_countries.upcase.split('|')
-        return true if countries.include?(country_code.upcase)
+        return true if SiteSetting.geoblocking_countries.upcase[country_code.upcase]
       end
     end
 
@@ -29,7 +28,7 @@ class GeoblockingMiddleware
   end
 
   def is_static(path)
-    return false if !path.present?
+    return false if path.blank?
 
     path.starts_with?("#{GlobalSetting.relative_url_root}/assets/") ||
     path.starts_with?("#{GlobalSetting.relative_url_root}/images/") ||
