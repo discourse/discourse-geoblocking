@@ -8,7 +8,13 @@
 enabled_site_setting :geoblocking_enabled
 
 require_relative("lib/geoblocking_middleware")
-Rails.configuration.middleware.use(GeoblockingMiddleware)
+if Rails.env == 'development' && !ENV['TRACK_REQUESTS']
+  Rails.configuration.middleware.unshift(GeoblockingMiddleware)
+else
+  DiscourseEvent.on(:request_tracker_registered) do
+    Rails.configuration.middleware.unshift(GeoblockingMiddleware)
+  end
+end
 
 after_initialize do
   require_relative("app/controllers/geoblocking_controller")
