@@ -8,7 +8,10 @@
 enabled_site_setting :geoblocking_enabled
 
 require_relative("lib/geoblocking_middleware")
-Rails.configuration.middleware.use(GeoblockingMiddleware)
+
+DiscourseEvent.on(:after_initializers) do
+  Rails.configuration.middleware.unshift(GeoblockingMiddleware)
+end
 
 after_initialize do
   require_relative("app/controllers/geoblocking_controller")
