@@ -7,7 +7,7 @@ class GeoblockingMiddleware
 
   def call(env)
     if is_blocked(env)
-      GeoblockingController.action('blocked').call(env)
+      [451, nil, nil]
     else
       @app.call(env)
     end
