@@ -7,7 +7,7 @@ class GeoblockingMiddleware
 
   def call(env)
     if is_blocked(env)
-      [451, nil, nil]
+      GeoblockingController.action('blocked').call(env)
     else
       @app.call(env)
     end
@@ -18,7 +18,8 @@ class GeoblockingMiddleware
   def is_blocked(env)
     return false if !SiteSetting.geoblocking_enabled || is_static(env['REQUEST_PATH'])
 
-    if info = DiscourseIpInfo.get(env['REMOTE_ADDR']).presence
+    request = Rack::Request.new(env)
+    if info = DiscourseIpInfo.get(request.ip).presence
       if country_code = info[:country_code].presence
         return true if SiteSetting.geoblocking_countries.upcase[country_code.upcase]
       end
