@@ -7,7 +7,7 @@ class GeoblockingController < ApplicationController
     respond_to do |format|
       format.html do
         append_view_path(File.expand_path("../../views", __FILE__))
-        render :blocked, layout: 'no_ember', status: :forbidden
+        render :blocked, layout: 'no_ember', locals: { hide_auth_buttons: true }, status: :forbidden
       end
       format.json do
         render json: { errors: [I18n.t('geoblocking.blocked')] }
