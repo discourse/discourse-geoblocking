@@ -10,7 +10,11 @@ enabled_site_setting :geoblocking_enabled
 require_relative("lib/geoblocking_middleware")
 
 DiscourseEvent.on(:after_initializers) do
-  Rails.configuration.middleware.unshift(GeoblockingMiddleware)
+  if Rails.configuration.multisite
+    Rails.configuration.middleware.insert_after(RailsMultisite::Middleware, GeoblockingMiddleware)
+  else
+    Rails.configuration.middleware.unshift(GeoblockingMiddleware)
+  end
 end
 
 after_initialize do
