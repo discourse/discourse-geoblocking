@@ -9,6 +9,6 @@ plugins:
     default: false
   geoblocking_whitelist:
     type: list
-    default: "US|UM|VI|AS|GU|PR|MP"
+    default: ""
     list_type: compact
 

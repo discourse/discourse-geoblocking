@@ -63,37 +63,56 @@ describe GeoblockingMiddleware do
     end
   end
 
-  describe "using whitelist" do
+  describe "use_whitelist enabled" do
     before do
       SiteSetting.geoblocking_use_whitelist = true
-      SiteSetting.geoblocking_whitelist = "CA|GB"
     end
 
-    it 'does not block whitelisted ips' do
-      env = make_env("REMOTE_ADDR" => gb_ip)
-
-      status, _ = subject.call(env)
-      expect(status).to eq(200)
-    end
-
-    it 'blocks ip not present in whitelist' do
-      env = make_env("REMOTE_ADDR" => us_ip)
-
-      status, _ = subject.call(env)
-      expect(status).to eq(403)
-    end
-
-    describe "with blocked_redirect" do
+    describe "with populated whitelist" do
       before do
-        SiteSetting.geoblocking_blocked_redirect = "http://markvanlan.com"
+        SiteSetting.geoblocking_whitelist = "CA|GB"
       end
 
-      it 'redirects on blocked request' do
+      it 'does not block whitelisted ips' do
+        env = make_env("REMOTE_ADDR" => gb_ip)
+
+        status, _ = subject.call(env)
+        expect(status).to eq(200)
+      end
+
+      it 'blocks ip not present in whitelist' do
         env = make_env("REMOTE_ADDR" => us_ip)
 
-        response = subject.call(env)
-        expect(response.first).to eq(302)
-        expect(response.second["Location"]).to eq(SiteSetting.geoblocking_blocked_redirect)
+        status, _ = subject.call(env)
+        expect(status).to eq(403)
+      end
+
+      describe "with blocked_redirect" do
+        before do
+          SiteSetting.geoblocking_blocked_redirect = "http://markvanlan.com"
+        end
+
+        it 'redirects on blocked request' do
+          env = make_env("REMOTE_ADDR" => us_ip)
+
+          response = subject.call(env)
+          expect(response.first).to eq(302)
+          expect(response.second["Location"]).to eq(SiteSetting.geoblocking_blocked_redirect)
+        end
+      end
+    end
+
+    describe "with unpopulated whitelist" do
+      before do
+        SiteSetting.geoblocking_whitelist = ""
+      end
+
+      it 'does not block any ips' do
+        [us_ip, gb_ip].each do |ip|
+          env = make_env("REMOTE_ADDR" => ip)
+          status, _ = subject.call(env)
+          expect(status).to eq(200)
+        end
       end
     end
   end
