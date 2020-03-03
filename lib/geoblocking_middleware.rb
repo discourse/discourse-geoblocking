@@ -18,11 +18,19 @@ class GeoblockingMiddleware
   def is_blocked(env)
     return false if !SiteSetting.geoblocking_enabled || is_static(env['REQUEST_PATH'])
 
+    default_blocked = SiteSetting.geoblocking_use_whitelist
     request = Rack::Request.new(env)
-    if info = DiscourseIpInfo.get(request.ip).presence
-      if country_code = info[:country_code].presence
-        return true if SiteSetting.geoblocking_countries.upcase[country_code.upcase]
-      end
+
+    info = DiscourseIpInfo.get(request.ip).presence
+    return default_blocked if !info
+
+    country_code = info[:country_code].presence
+    return default_blocked if !country_code
+
+    if default_blocked
+      return true if !SiteSetting.geoblocking_whitelist.upcase[country_code.upcase]
+    else
+      return true if SiteSetting.geoblocking_countries.upcase[country_code.upcase]
     end
 
     false
