@@ -1,6 +1,14 @@
 plugins:
   geoblocking_enabled: true
+  geoblocking_blocked_redirect: ""
   geoblocking_countries:
     type: list
     default: "EU|AD|AL|AT|BA|BE|BG|BY|CH|CS|CZ|DE|DK|EE|ES|FI|FO|FR|FX|GB|GI|GR|HR|HU|IE|IS|IT|LI|LT|LU|LV|MC|MD|MK|MT|NL|NO|PL|PT|RO|SE|SI|SJ|SK|SM|UA|VA"
     list_type: compact
+  geoblocking_use_whitelist:
+    default: false
+  geoblocking_whitelist:
+    type: list
+    default: ""
+    list_type: compact
+
