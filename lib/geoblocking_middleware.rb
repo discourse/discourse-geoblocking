@@ -6,7 +6,7 @@ class GeoblockingMiddleware
   end
 
   def call(env)
-    if is_blocked(env)
+    if check_route(env) && is_blocked(env)
       GeoblockingController.action('blocked').call(env)
     else
       @app.call(env)
@@ -14,6 +14,14 @@ class GeoblockingMiddleware
   end
 
   private
+
+  def check_route(env)
+    ['srv/status'].each do |route|
+      return false if env["REQUEST_URI"].include?(route)
+    end
+
+    true
+  end
 
   def is_blocked(env)
     return false if !SiteSetting.geoblocking_enabled || is_static(env['REQUEST_PATH'])
