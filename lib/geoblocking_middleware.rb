@@ -16,7 +16,7 @@ class GeoblockingMiddleware
   private
 
   def check_route(env)
-    ['srv/status'].each do |route|
+    ['srv/status', '/admin'].each do |route|
       return false if env["REQUEST_URI"].include?(route)
     end
 

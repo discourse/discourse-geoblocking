@@ -126,6 +126,14 @@ describe GeoblockingMiddleware do
         status, _ = subject.call(env)
         expect(status).to eq(200)
       end
+
+      it 'never blocks admin routes' do
+        ['/admin', '/u/admin-login'].each do |route|
+          env = make_env("REMOTE_ADDR" => us_ip, "REQUEST_URI" => route)
+          status, _ = subject.call(env)
+          expect(status).to eq(200)
+        end
+      end
     end
   end
 end
