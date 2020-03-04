@@ -115,5 +115,17 @@ describe GeoblockingMiddleware do
         end
       end
     end
+
+    describe "always-open routes" do
+      before do
+        SiteSetting.geoblocking_whitelist = "GB"
+      end
+
+      it 'never blocks srv/status route' do
+        env = make_env("REMOTE_ADDR" => us_ip, "REQUEST_URI" => "/srv/status")
+        status, _ = subject.call(env)
+        expect(status).to eq(200)
+      end
+    end
   end
 end
