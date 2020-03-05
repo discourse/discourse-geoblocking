@@ -44,6 +44,26 @@ describe ApplicationController do
         get "/stylesheets/mobile.css"
         expect(status).to eq(200)
       end
+
+      it 'blocks regular users in blacklist' do
+        ActionDispatch::Request.any_instance.stubs(:remote_ip).returns(gb_ip)
+        SiteSetting.geoblocking_enabled = false
+        sign_in(Fabricate(:user))
+        SiteSetting.geoblocking_enabled = true
+        get "/"
+
+        expect(response.status).to eq(403)
+      end
+
+      it 'never blocks admin' do
+        ActionDispatch::Request.any_instance.stubs(:remote_ip).returns(gb_ip)
+        SiteSetting.geoblocking_enabled = false
+        sign_in(Fabricate(:admin))
+        SiteSetting.geoblocking_enabled = true
+        get "/"
+
+        expect(response.status).to eq(200)
+      end
     end
 
     describe "always-open routes" do
@@ -119,9 +139,24 @@ describe ApplicationController do
         end
 
         it 'never blocks srv/status route' do
-          sign_in(Fabricate(:user))
           ActionDispatch::Request.any_instance.stubs(:remote_ip).returns(us_ip)
           get "/srv/status"
+
+          expect(response.status).to eq(200)
+        end
+      end
+
+      describe "logged in admin" do
+        before do
+          SiteSetting.geoblocking_whitelist = "GB"
+          SiteSetting.geoblocking_enabled = false
+          sign_in(Fabricate(:admin))
+          SiteSetting.geoblocking_enabled = true
+        end
+
+        it 'never blocks admin' do
+          ActionDispatch::Request.any_instance.stubs(:remote_ip).returns(us_ip)
+          get "/"
 
           expect(response.status).to eq(200)
         end
@@ -130,6 +165,13 @@ describe ApplicationController do
   end
 
   describe "geoblocking disabled" do
-
+    it 'does not block routes' do
+      SiteSetting.geoblocking_enabled = false
+      SiteSetting.geoblocking_use_whitelist = true
+      SiteSetting.geoblocking_whitelist = "GB"
+      ActionDispatch::Request.any_instance.stubs(:remote_ip).returns(us_ip)
+      get '/'
+      expect(response.status).to eq(200)
+    end
   end
 end

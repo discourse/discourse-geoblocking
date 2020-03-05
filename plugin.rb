@@ -9,9 +9,11 @@
 after_initialize do
   require_dependency "application_controller"
 
-  class ActionController::Base
+  class ::ApplicationController
+    before_action :geoblock
+
     def geoblock
-      if check_route(request) && is_blocked(request)
+      if SiteSetting.geoblocking_enabled && not_admin && check_route(request) && is_blocked(request)
         respond_to do |format|
           if SiteSetting.geoblocking_blocked_redirect.present?
             format.html do
@@ -35,8 +37,14 @@ after_initialize do
 
     private
 
+    def not_admin
+      return (current_user.nil? || !current_user.admin)
+    end
+
     def check_route(request)
-      ['srv/status', '/admin'].each do |route|
+      return false if  is_static(request.path)
+
+      ['srv/status', 'u/admin-login', 'users/admin-login', 'session/email-login'].each do |route|
         return false if request.path.include?(route)
       end
 
@@ -44,11 +52,8 @@ after_initialize do
     end
 
     def is_blocked(request)
-      return false if !SiteSetting.geoblocking_enabled || is_static(request.path)
-
       whitelist = SiteSetting.geoblocking_whitelist&.upcase
       default_blocked = SiteSetting.geoblocking_use_whitelist && whitelist.present?
-
       info = DiscourseIpInfo.get(request.remote_ip).presence
       return default_blocked if !info
 
@@ -74,6 +79,5 @@ after_initialize do
       path.starts_with?("#{GlobalSetting.relative_url_root}/stylesheets/")
     end
   end
-  ActionController::Base.instance_eval { before_action :geoblock }
 end
 
