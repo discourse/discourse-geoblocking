@@ -1,5 +1,5 @@
 plugins:
-  geoblocking_enabled: true
+  geoblocking_enabled: false
   geoblocking_blocked_redirect: ""
   geoblocking_countries:
     type: list
