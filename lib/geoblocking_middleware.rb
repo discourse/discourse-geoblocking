@@ -23,7 +23,15 @@ class GeoblockingMiddleware
   def check_route(env)
     return false if is_static(env['REQUEST_PATH'])
 
-    ['srv/status', 'u/admin-login', 'users/admin-login', 'session/email-login'].each do |route|
+    [
+      'srv/status',
+      'u/admin-login',
+      'users/admin-login',
+      'session/email-login',
+      'session/csrf',
+      'logs/report_js_error',
+      'manifest.webmanifest'
+    ].each do |route|
       return false if env["REQUEST_URI"].include?(route)
     end
 
