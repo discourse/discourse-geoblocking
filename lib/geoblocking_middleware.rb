@@ -6,7 +6,7 @@ class GeoblockingMiddleware
   end
 
   def call(env)
-    if check_route(env) && is_blocked(env)
+    if SiteSetting.geoblocking_enabled && not_admin(env) && check_route(env) && is_blocked(env)
       GeoblockingController.action('blocked').call(env)
     else
       @app.call(env)
@@ -15,8 +15,15 @@ class GeoblockingMiddleware
 
   private
 
+  def not_admin(env)
+    user = CurrentUser.lookup_from_env(env)
+    user.nil? || !user.admin?
+  end
+
   def check_route(env)
-    ['srv/status'].each do |route|
+    return false if is_static(env['REQUEST_PATH'])
+
+    ['srv/status', 'u/admin-login', 'users/admin-login', 'session/email-login'].each do |route|
       return false if env["REQUEST_URI"].include?(route)
     end
 
@@ -24,8 +31,6 @@ class GeoblockingMiddleware
   end
 
   def is_blocked(env)
-    return false if !SiteSetting.geoblocking_enabled || is_static(env['REQUEST_PATH'])
-
     whitelist = SiteSetting.geoblocking_whitelist&.upcase
     default_blocked = SiteSetting.geoblocking_use_whitelist && whitelist.present?
     request = Rack::Request.new(env)

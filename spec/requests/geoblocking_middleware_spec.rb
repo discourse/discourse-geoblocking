@@ -87,6 +87,38 @@ describe GeoblockingMiddleware do
         expect(status).to eq(403)
       end
 
+      it 'never blocks srv/status and admin login routes' do
+        ['srv/status', 'u/admin-login', 'users/admin-login', 'session/email-login'].each do |route|
+          env = make_env("REMOTE_ADDR" => us_ip, "REQUEST_URI" => route)
+          status, _ = subject.call(env)
+          expect(status).to eq(200)
+        end
+      end
+
+      it 'never blocks admin users' do
+        SiteSetting.geoblocking_enabled = false
+        admin = Fabricate(:admin)
+        sign_in(admin)
+        token = UserAuthToken.generate!(user_id: admin.id)
+        SiteSetting.geoblocking_enabled = true
+
+        env = make_env("REMOTE_ADDR" => us_ip, "REQUEST_URI" => "/", "HTTP_COOKIE" => "_t=#{token.unhashed_auth_token}")
+        status, _ = subject.call(env)
+        expect(status).to eq(200)
+      end
+
+      it 'blocks regular users' do
+        SiteSetting.geoblocking_enabled = false
+        user = Fabricate(:user)
+        sign_in(user)
+        token = UserAuthToken.generate!(user_id: user.id)
+        SiteSetting.geoblocking_enabled = true
+
+        env = make_env("REMOTE_ADDR" => us_ip, "REQUEST_URI" => "/", "HTTP_COOKIE" => "_t=#{token.unhashed_auth_token}")
+        status, _ = subject.call(env)
+        expect(status).to eq(403)
+      end
+
       describe "with blocked_redirect" do
         before do
           SiteSetting.geoblocking_blocked_redirect = "http://markvanlan.com"
@@ -113,18 +145,6 @@ describe GeoblockingMiddleware do
           status, _ = subject.call(env)
           expect(status).to eq(200)
         end
-      end
-    end
-
-    describe "always-open routes" do
-      before do
-        SiteSetting.geoblocking_whitelist = "GB"
-      end
-
-      it 'never blocks srv/status route' do
-        env = make_env("REMOTE_ADDR" => us_ip, "REQUEST_URI" => "/srv/status")
-        status, _ = subject.call(env)
-        expect(status).to eq(200)
       end
     end
   end
