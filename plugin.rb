@@ -11,7 +11,14 @@ require_relative("lib/geoblocking_middleware")
 
 DiscourseEvent.on(:after_initializers) do
   # Must be added after DebugExceptions so that postgres errors trigger failover
-  Rails.configuration.middleware.insert_after(Logster::Middleware::DebugExceptions, GeoblockingMiddleware)
+  middleware =
+    if defined?(Logster::Middleware::DebugExceptions)
+      Logster::Middleware::DebugExceptions
+    else
+      ActionDispatch::DebugExceptions
+    end
+
+  Rails.configuration.middleware.insert_after(middleware, GeoblockingMiddleware)
 end
 
 after_initialize do
