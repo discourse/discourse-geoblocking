@@ -18,6 +18,8 @@ class GeoblockingMiddleware
   def not_admin(env)
     user = CurrentUser.lookup_from_env(env)
     user.nil? || !user.admin?
+  rescue Discourse::InvalidAccess
+    true
   end
 
   def check_route(env)
