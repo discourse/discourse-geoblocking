@@ -148,4 +148,23 @@ describe GeoblockingMiddleware do
       end
     end
   end
+
+  describe 'using an invalid API key' do
+    it "treats invalid API key requests as non-admin requests" do
+      user = Fabricate(:user)
+      api_key = ApiKey.create!(user: user, revoked_at: Time.zone.now, last_used_at: nil)
+
+      env = make_env(
+        {
+          "HTTP_API_USERNAME" => user.username.downcase,
+          "HTTP_API_KEY" => api_key.key,
+          "REMOTE_ADDR" => us_ip,
+          "REQUEST_URI" => "/",
+        }
+      )
+
+      status, _ = subject.call(env)
+      expect(status).to eq(200)
+    end
+  end
 end
