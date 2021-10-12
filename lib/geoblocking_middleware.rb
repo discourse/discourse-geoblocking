@@ -67,6 +67,7 @@ class GeoblockingMiddleware
     path.starts_with?("#{GlobalSetting.relative_url_root}/assets/") ||
     path.starts_with?("#{GlobalSetting.relative_url_root}/images/") ||
     path.starts_with?("#{GlobalSetting.relative_url_root}/uploads/") ||
-    path.starts_with?("#{GlobalSetting.relative_url_root}/stylesheets/")
+    path.starts_with?("#{GlobalSetting.relative_url_root}/stylesheets/") ||
+    path.starts_with?("#{GlobalSetting.relative_url_root}/service-worker")
   end
 end
