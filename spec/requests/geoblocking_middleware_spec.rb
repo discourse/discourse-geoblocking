@@ -24,9 +24,9 @@ describe GeoblockingMiddleware do
     DiscourseIpInfo.open_db(File.join(Rails.root, 'spec', 'fixtures', 'mmdb'))
   end
 
-  describe "using blacklist (use_whitelist disabled)" do
+  describe "using blocklist (use_allowlist disabled)" do
     before do
-      SiteSetting.geoblocking_use_whitelist = false
+      SiteSetting.geoblocking_use_allowlist = false
     end
 
     it 'uses site settings' do
@@ -72,24 +72,24 @@ describe GeoblockingMiddleware do
     end
   end
 
-  describe "use_whitelist enabled" do
+  describe "use_allowlist enabled" do
     before do
-      SiteSetting.geoblocking_use_whitelist = true
+      SiteSetting.geoblocking_use_allowlist = true
     end
 
-    describe "with populated whitelist" do
+    describe "with populated allowlist" do
       before do
-        SiteSetting.geoblocking_whitelist = "CA|GB"
+        SiteSetting.geoblocking_allowlist = "CA|GB"
       end
 
-      it 'does not block whitelisted ips' do
+      it 'does not block allowlisted ips' do
         env = make_env("REMOTE_ADDR" => gb_ip)
 
         status, _ = subject.call(env)
         expect(status).to eq(200)
       end
 
-      it 'blocks ip not present in whitelist' do
+      it 'blocks ip not present in allowlist' do
         env = make_env("REMOTE_ADDR" => us_ip)
 
         status, _ = subject.call(env)
@@ -143,9 +143,9 @@ describe GeoblockingMiddleware do
       end
     end
 
-    describe "with unpopulated whitelist" do
+    describe "with unpopulated allowlist" do
       before do
-        SiteSetting.geoblocking_whitelist = ""
+        SiteSetting.geoblocking_allowlist = ""
       end
 
       it 'does not block any ips' do

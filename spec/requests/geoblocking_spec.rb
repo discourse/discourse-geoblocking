@@ -5,8 +5,8 @@ require 'rails_helper'
 describe GeoblockingController do
   it 'does not redirect users in a loop if login_required' do
     SiteSetting.login_required = true
-    SiteSetting.geoblocking_use_whitelist = true
-    SiteSetting.geoblocking_whitelist = 'EU'
+    SiteSetting.geoblocking_use_allowlist = true
+    SiteSetting.geoblocking_allowlist = 'EU'
 
     get Discourse.base_url
     expect(response.status).to eq(403)
