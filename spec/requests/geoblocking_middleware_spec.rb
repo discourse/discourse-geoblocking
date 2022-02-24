@@ -38,6 +38,15 @@ describe GeoblockingMiddleware do
       expect(status).to eq(200)
     end
 
+    it 'checks for exact match' do
+      SiteSetting.geoblocking_countries = "US-TEST"
+
+      env = make_env("REMOTE_ADDR" => us_ip)
+
+      status, _ = subject.call(env)
+      expect(status).to eq(200)
+    end
+
     it 'does not block non-European IP by default' do
       env = make_env("REMOTE_ADDR" => us_ip)
 
