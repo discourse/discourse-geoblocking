@@ -51,6 +51,8 @@ class GeoblockingMiddleware
     return default_blocked if !country_code
 
     if SiteSetting.geoblocking_use_whitelist
+      return false if SiteSetting.geoblocking_whitelist.blank?
+
       allowed_countries = SiteSetting.geoblocking_whitelist.upcase.split('|')
       return true if !allowed_countries.include?(country_code)
     else
