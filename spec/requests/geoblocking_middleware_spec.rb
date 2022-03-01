@@ -24,11 +24,7 @@ describe GeoblockingMiddleware do
     DiscourseIpInfo.open_db(File.join(Rails.root, 'spec', 'fixtures', 'mmdb'))
   end
 
-  describe "using blocklist (use_allowlist disabled)" do
-    before do
-      SiteSetting.geoblocking_use_allowlist = false
-    end
-
+  describe "using blocklist" do
     it 'uses site settings' do
       SiteSetting.geoblocking_countries = SiteSetting.geoblocking_countries.split('|').reject { |x| x == "GB" }.join('|')
 
@@ -72,11 +68,7 @@ describe GeoblockingMiddleware do
     end
   end
 
-  describe "use_allowlist enabled" do
-    before do
-      SiteSetting.geoblocking_use_allowlist = true
-    end
-
+  describe "using allowlist" do
     describe "with populated allowlist" do
       before do
         SiteSetting.geoblocking_allowlist = "CA|GB"
@@ -149,11 +141,13 @@ describe GeoblockingMiddleware do
       end
 
       it 'does not block any ips' do
-        [us_ip, gb_ip].each do |ip|
-          env = make_env("REMOTE_ADDR" => ip)
-          status, _ = subject.call(env)
-          expect(status).to eq(200)
-        end
+        env = make_env("REMOTE_ADDR" => us_ip)
+        status, _ = subject.call(env)
+        expect(status).to eq(200)
+
+        env = make_env("REMOTE_ADDR" => gb_ip)
+        status, _ = subject.call(env)
+        expect(status).to eq(403)
       end
     end
   end
