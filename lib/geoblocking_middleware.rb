@@ -41,7 +41,7 @@ class GeoblockingMiddleware
   end
 
   def is_blocked(env)
-    default_blocked = SiteSetting.geoblocking_allowlist.present?
+    default_blocked = SiteSetting.geoblocking_allowlist.present? || SiteSetting.geoblocking_geoname_ids_allowlist.present?
     request = Rack::Request.new(env)
 
     info = DiscourseIpInfo.get(request.ip).presence
@@ -50,12 +50,19 @@ class GeoblockingMiddleware
     country_code = info[:country_code].presence&.upcase
     return default_blocked if !country_code
 
-    if SiteSetting.geoblocking_allowlist.present?
+    geoname_ids = info[:geoname_ids].presence
+    return default_blocked if !geoname_ids
+
+    if default_blocked
       allowed_countries = SiteSetting.geoblocking_allowlist.upcase.split('|')
-      return true if !allowed_countries.include?(country_code)
+      allowed_geoname_ids = SiteSetting.geoblocking_geoname_ids_allowlist.split('|').map(&:to_i).to_set
+
+      return true if !allowed_countries.include?(country_code) && !geoname_ids.any? { |gid| allowed_geoname_ids.include?(gid) }
     else
       blocked_countries = SiteSetting.geoblocking_countries.upcase.split('|')
-      return true if blocked_countries.include?(country_code)
+      blocked_geoname_ids = SiteSetting.geoblocking_geoname_ids.split('|').map(&:to_i).to_set
+
+      return true if blocked_countries.include?(country_code) || geoname_ids.any? { |gid| blocked_geoname_ids.include?(gid) }
     end
 
     false

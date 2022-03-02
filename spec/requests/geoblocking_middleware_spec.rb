@@ -152,6 +152,32 @@ describe GeoblockingMiddleware do
     end
   end
 
+  describe 'geoname IDs' do
+    it 'can block' do
+      SiteSetting.geoblocking_geoname_ids = "2643743" # London, GB
+
+      env = make_env("REMOTE_ADDR" => us_ip)
+      status, _ = subject.call(env)
+      expect(status).to eq(200)
+
+      env = make_env("REMOTE_ADDR" => gb_ip)
+      status, _ = subject.call(env)
+      expect(status).to eq(403)
+    end
+
+    it 'can allow' do
+      SiteSetting.geoblocking_geoname_ids_allowlist = "2643743" # London, GB
+
+      env = make_env("REMOTE_ADDR" => us_ip)
+      status, _ = subject.call(env)
+      expect(status).to eq(403)
+
+      env = make_env("REMOTE_ADDR" => gb_ip)
+      status, _ = subject.call(env)
+      expect(status).to eq(200)
+    end
+  end
+
   describe 'using an invalid API key' do
     it "treats invalid API key requests as non-admin requests" do
       user = Fabricate(:user)

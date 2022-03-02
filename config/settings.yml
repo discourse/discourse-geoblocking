@@ -9,4 +9,11 @@ plugins:
     type: list
     default: ""
     list_type: compact
-
+  geoblocking_geoname_ids:
+    type: list
+    default: ""
+    list_type: compact
+  geoblocking_geoname_ids_allowlist:
+    type: list
+    default: ""
+    list_type: compact
