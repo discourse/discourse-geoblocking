@@ -24,7 +24,7 @@ describe GeoblockingMiddleware do
     DiscourseIpInfo.open_db(File.join(Rails.root, 'spec', 'fixtures', 'mmdb'))
   end
 
-  describe "using blocklist" do
+  describe "using countries blocklist" do
     it 'uses site settings' do
       SiteSetting.geoblocking_blocked_countries = SiteSetting.geoblocking_blocked_countries.split('|').reject { |x| x == "GB" }.join('|')
 
@@ -68,7 +68,7 @@ describe GeoblockingMiddleware do
     end
   end
 
-  describe "using allowlist" do
+  describe "using countries allowlist" do
     describe "with populated allowlist" do
       before do
         SiteSetting.geoblocking_allowed_countries = "CA|GB"
@@ -149,6 +149,34 @@ describe GeoblockingMiddleware do
         status, _ = subject.call(env)
         expect(status).to eq(403)
       end
+    end
+  end
+
+  describe "using geoname IDs blacklist" do
+    it 'blocks' do
+      SiteSetting.geoblocking_blocked_geoname_ids = "2643743" # London, GB
+
+      env = make_env("REMOTE_ADDR" => us_ip)
+      status, _ = subject.call(env)
+      expect(status).to eq(200)
+
+      env = make_env("REMOTE_ADDR" => gb_ip)
+      status, _ = subject.call(env)
+      expect(status).to eq(403)
+    end
+  end
+
+  describe 'using geoname IDs allowlist' do
+    it 'blocks' do
+      SiteSetting.geoblocking_allowed_geoname_ids = "2643743" # London, GB
+
+      env = make_env("REMOTE_ADDR" => us_ip)
+      status, _ = subject.call(env)
+      expect(status).to eq(403)
+
+      env = make_env("REMOTE_ADDR" => gb_ip)
+      status, _ = subject.call(env)
+      expect(status).to eq(200)
     end
   end
 

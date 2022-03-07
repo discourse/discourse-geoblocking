@@ -3,6 +3,8 @@ en:
     geoblocking_enabled: "Restrict access to content based upon the user's geographical location"
     geoblocking_blocked_redirect: "Redirect blocked requests to this URL. An error page will be shown if this is unset"
     geoblocking_blocked_countries: "List of country codes (ISO 3166) that are blocked"
-    geoblocking_allowed_countries: "List of country codes (ISO 3166) that are allowed. geoblocking_blocked_countries is ignored if this site setting is present"
+    geoblocking_allowed_countries: "List of country codes (ISO 3166) that are allowed. geoblocking_blocked_countries and geoblocking_blocked_geoname_ids are ignored if this site setting is present"
+    geoblocking_blocked_geoname_ids: "List of Geoname IDs that are blocked"
+    geoblocking_allowed_geoname_ids: "List of Geoname IDs that are allowed. geoblocking_blocked_countries and geoblocking_blocked_geoname_ids are ignored if this site setting is present"
   geoblocking:
     blocked: 'Access forbidden based on location.'

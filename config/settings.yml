@@ -11,3 +11,11 @@ plugins:
     default: ""
     list_type: named
     choices: "DiscourseGeoblocking::COUNTRY_CODES"
+  geoblocking_blocked_geoname_ids:
+    type: list
+    default: ""
+    list_type: compact
+  geoblocking_allowed_geoname_ids:
+    type: list
+    default: ""
+    list_type: compact
