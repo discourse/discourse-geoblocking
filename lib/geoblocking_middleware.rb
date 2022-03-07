@@ -54,15 +54,9 @@ class GeoblockingMiddleware
     return default_blocked if !geoname_ids
 
     if default_blocked
-      allowed_countries = SiteSetting.geoblocking_allowed_countries.upcase.split('|')
-      allowed_geoname_ids = SiteSetting.geoblocking_allowed_geoname_ids.split('|').map(&:to_i).to_set
-
-      return true if !allowed_countries.include?(country_code) && !geoname_ids.any? { |id| allowed_geoname_ids.include?(id) }
+      return true if !DiscourseGeoblocking.allowed_countries.include?(country_code) && !geoname_ids.any? { |id| DiscourseGeoblocking.allowed_geoname_ids.include?(id) }
     else
-      blocked_countries = SiteSetting.geoblocking_blocked_countries.upcase.split('|')
-      blocked_geoname_ids = SiteSetting.geoblocking_blocked_geoname_ids.split('|').map(&:to_i).to_set
-
-      return true if blocked_countries.include?(country_code) || geoname_ids.any? { |id| blocked_geoname_ids.include?(id) }
+      return true if DiscourseGeoblocking.blocked_countries.include?(country_code) || geoname_ids.any? { |id| DiscourseGeoblocking.blocked_geoname_ids.include?(id) }
     end
 
     false

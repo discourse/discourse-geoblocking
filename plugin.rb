@@ -287,4 +287,39 @@ end
 
 after_initialize do
   require_relative("app/controllers/geoblocking_controller")
+
+  module ::DiscourseGeoblocking
+    def self.allowed_countries
+      @allowed_countries ||= SiteSetting.geoblocking_allowed_countries.upcase.split("|")
+    end
+
+    def self.allowed_geoname_ids
+      @allowed_geoname_ids ||= SiteSetting.geoblocking_allowed_geoname_ids.split("|").map(&:to_i).to_set
+    end
+
+    def self.blocked_countries
+      @blocked_countries ||= SiteSetting.geoblocking_blocked_countries.upcase.split("|")
+    end
+
+    def self.blocked_geoname_ids
+      @blocked_geoname_ids ||= SiteSetting.geoblocking_blocked_geoname_ids.split("|").map(&:to_i).to_set
+    end
+
+    def self.reset_settings_cache!
+      @allowed_countries = nil
+      @allowed_geoname_ids = nil
+      @blocked_countries = nil
+      @blocked_geoname_ids = nil
+    end
+  end
+
+  on(:site_setting_changed) do |name, old_value, new_value|
+    if [:geoblocking_enabled,
+        :geoblocking_allowed_countries,
+        :geoblocking_allowed_geoname_ids,
+        :geoblocking_blocked_countries,
+        :geoblocking_blocked_geoname_ids].include?(name)
+      DiscourseGeoblocking.reset_settings_cache!
+    end
+  end
 end
