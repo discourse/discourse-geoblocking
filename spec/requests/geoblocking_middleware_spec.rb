@@ -24,13 +24,9 @@ describe GeoblockingMiddleware do
     DiscourseIpInfo.open_db(File.join(Rails.root, 'spec', 'fixtures', 'mmdb'))
   end
 
-  describe "using blacklist (use_whitelist disabled)" do
-    before do
-      SiteSetting.geoblocking_use_whitelist = false
-    end
-
+  describe "using countries blocklist" do
     it 'uses site settings' do
-      SiteSetting.geoblocking_countries = SiteSetting.geoblocking_countries.split('|').reject { |x| x == "GB" }.join('|')
+      SiteSetting.geoblocking_blocked_countries = SiteSetting.geoblocking_blocked_countries.split('|').reject { |x| x == "GB" }.join('|')
 
       env = make_env("REMOTE_ADDR" => gb_ip)
 
@@ -39,7 +35,7 @@ describe GeoblockingMiddleware do
     end
 
     it 'checks for exact match' do
-      SiteSetting.geoblocking_countries = "US-TEST"
+      SiteSetting.geoblocking_blocked_countries = "US-TEST"
 
       env = make_env("REMOTE_ADDR" => us_ip)
 
@@ -72,24 +68,20 @@ describe GeoblockingMiddleware do
     end
   end
 
-  describe "use_whitelist enabled" do
-    before do
-      SiteSetting.geoblocking_use_whitelist = true
-    end
-
-    describe "with populated whitelist" do
+  describe "using countries allowlist" do
+    describe "with populated allowlist" do
       before do
-        SiteSetting.geoblocking_whitelist = "CA|GB"
+        SiteSetting.geoblocking_allowed_countries = "CA|GB"
       end
 
-      it 'does not block whitelisted ips' do
+      it 'does not block allowlisted ips' do
         env = make_env("REMOTE_ADDR" => gb_ip)
 
         status, _ = subject.call(env)
         expect(status).to eq(200)
       end
 
-      it 'blocks ip not present in whitelist' do
+      it 'blocks ip not present in allowlist' do
         env = make_env("REMOTE_ADDR" => us_ip)
 
         status, _ = subject.call(env)
@@ -143,18 +135,48 @@ describe GeoblockingMiddleware do
       end
     end
 
-    describe "with unpopulated whitelist" do
+    describe "with unpopulated allowlist" do
       before do
-        SiteSetting.geoblocking_whitelist = ""
+        SiteSetting.geoblocking_allowed_countries = ""
       end
 
       it 'does not block any ips' do
-        [us_ip, gb_ip].each do |ip|
-          env = make_env("REMOTE_ADDR" => ip)
-          status, _ = subject.call(env)
-          expect(status).to eq(200)
-        end
+        env = make_env("REMOTE_ADDR" => us_ip)
+        status, _ = subject.call(env)
+        expect(status).to eq(200)
+
+        env = make_env("REMOTE_ADDR" => gb_ip)
+        status, _ = subject.call(env)
+        expect(status).to eq(403)
       end
+    end
+  end
+
+  describe "using geoname IDs blacklist" do
+    it 'blocks' do
+      SiteSetting.geoblocking_blocked_geoname_ids = "2643743" # London, GB
+
+      env = make_env("REMOTE_ADDR" => us_ip)
+      status, _ = subject.call(env)
+      expect(status).to eq(200)
+
+      env = make_env("REMOTE_ADDR" => gb_ip)
+      status, _ = subject.call(env)
+      expect(status).to eq(403)
+    end
+  end
+
+  describe 'using geoname IDs allowlist' do
+    it 'blocks' do
+      SiteSetting.geoblocking_allowed_geoname_ids = "2643743" # London, GB
+
+      env = make_env("REMOTE_ADDR" => us_ip)
+      status, _ = subject.call(env)
+      expect(status).to eq(403)
+
+      env = make_env("REMOTE_ADDR" => gb_ip)
+      status, _ = subject.call(env)
+      expect(status).to eq(200)
     end
   end
 
