@@ -43,14 +43,22 @@ describe GeoblockingMiddleware do
       expect(status).to eq(200)
     end
 
-    it 'does not block non-European IP by default' do
+    it 'does not block US IP by default' do
       env = make_env("REMOTE_ADDR" => us_ip)
 
       status, _ = subject.call(env)
       expect(status).to eq(200)
     end
 
-    it 'blocks European IPs by default' do
+    it 'does not block UK IP by default' do
+      env = make_env("REMOTE_ADDR" => gb_ip)
+
+      status, _ = subject.call(env)
+      expect(status).to eq(200)
+    end
+
+    it 'blocks ip present in blocklist' do
+      SiteSetting.geoblocking_blocked_countries = "GB"
       env = make_env("REMOTE_ADDR" => gb_ip)
 
       status, _ = subject.call(env)
@@ -147,7 +155,7 @@ describe GeoblockingMiddleware do
 
         env = make_env("REMOTE_ADDR" => gb_ip)
         status, _ = subject.call(env)
-        expect(status).to eq(403)
+        expect(status).to eq(200)
       end
     end
   end
