@@ -2,7 +2,7 @@
 
 ### About
 
-A Discourse plugin to restrict access to users whose IP matches certain [ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2) countries or regions.
+A Discourse plugin to restrict access to users whose IP matches a given list of [ISO 3166-1 alpha 2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) countries or [Geoname IDs](https://www.geonames.org/).
 
 ### Configuration
 
