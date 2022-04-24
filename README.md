@@ -9,7 +9,7 @@ A Discourse plugin to restrict access to users whose IP matches a given list of 
 Site Settings:
 
 | site setting                      | description                                                                                                                                                        |
-| :-                                | :-                                                                                                                                                                 |
+| :-------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `geoblocking_enabled`             | Enable plugin; restrict access to content based upon the user's geographical location.                                                                             |
 | `geoblocking_blocked_redirect`    | Redirect blocked requests to this URL. An error page will be shown if this is unset                                                                                |
 | `geoblocking_blocked_countries`   | List of country codes that are blocked                                                                                                                             |
@@ -20,4 +20,3 @@ Site Settings:
 ### License
 
 MIT
-

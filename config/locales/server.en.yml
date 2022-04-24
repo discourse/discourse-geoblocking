@@ -7,4 +7,4 @@ en:
     geoblocking_blocked_geoname_ids: "List of Geoname IDs that are blocked"
     geoblocking_allowed_geoname_ids: "List of Geoname IDs that are allowed. geoblocking_blocked_countries and geoblocking_blocked_geoname_ids are ignored if this site setting is present"
   geoblocking:
-    blocked: 'Access forbidden based on location.'
+    blocked: "Access forbidden based on location."
