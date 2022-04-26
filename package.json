@@ -1,0 +1,10 @@
+{
+  "name": "discourse-geoblocking",
+  "version": "0.1.0",
+  "repository": "https://github.com/discourse-org/discourse-geoblocking",
+  "author": "Discourse",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "eslint-config-discourse": "^3.1.0"
+  }
+}
