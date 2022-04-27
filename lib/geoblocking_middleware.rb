@@ -48,10 +48,8 @@ class GeoblockingMiddleware
     return default_blocked if !info
 
     country_code = info[:country_code].presence&.upcase
-    return default_blocked if !country_code
-
     geoname_ids = info[:geoname_ids].presence
-    return default_blocked if !geoname_ids
+    return default_blocked if !country_code && !geoname_ids
 
     if default_blocked
       return true if !DiscourseGeoblocking.allowed_countries.include?(country_code) && !geoname_ids.any? { |id| DiscourseGeoblocking.allowed_geoname_ids.include?(id) }
