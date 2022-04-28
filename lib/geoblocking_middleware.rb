@@ -44,12 +44,12 @@ class GeoblockingMiddleware
     default_blocked = SiteSetting.geoblocking_allowed_countries.present? || SiteSetting.geoblocking_allowed_geoname_ids.present?
     request = Rack::Request.new(env)
 
-    info = DiscourseIpInfo.get(request.ip).presence
-    return default_blocked if !info
+    info = DiscourseIpInfo.get(request.ip)
+    return default_blocked if info.blank?
 
-    country_code = info[:country_code].presence&.upcase
-    geoname_ids = info[:geoname_ids].presence
-    return default_blocked if !country_code && !geoname_ids
+    country_code = info[:country_code]&.upcase
+    geoname_ids = info[:geoname_ids] || []
+    return default_blocked if country_code.blank? && geoname_ids.blank?
 
     if default_blocked
       return true if !DiscourseGeoblocking.allowed_countries.include?(country_code) && !geoname_ids.any? { |id| DiscourseGeoblocking.allowed_geoname_ids.include?(id) }
