@@ -86,6 +86,18 @@ describe GeoblockingMiddleware do
       status, _ = subject.call(env)
       expect(status).to eq(200)
     end
+
+    it 'does not block ip if geoname ids are missing' do
+      info = DiscourseIpInfo.get(gb_ip)
+      info[:geoname_ids] = []
+      DiscourseIpInfo.stubs(:get).with(gb_ip).returns(info)
+
+      SiteSetting.geoblocking_blocked_countries = "US"
+      env = make_env("REMOTE_ADDR" => gb_ip)
+
+      status, _ = subject.call(env)
+      expect(status).to eq(200)
+    end
   end
 
   describe "using countries allowlist" do
