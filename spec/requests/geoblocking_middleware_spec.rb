@@ -65,6 +65,18 @@ describe GeoblockingMiddleware do
       expect(status).to eq(403)
     end
 
+    it 'blocks ip even if geoname ids are missing' do
+      info = DiscourseIpInfo.get(gb_ip)
+      info[:geoname_ids] = []
+      DiscourseIpInfo.stubs(:get).with(gb_ip).returns(info)
+
+      SiteSetting.geoblocking_blocked_countries = "GB"
+      env = make_env("REMOTE_ADDR" => gb_ip)
+
+      status, _ = subject.call(env)
+      expect(status).to eq(403)
+    end
+
     it 'does not block static resources' do
       env = make_env(
         "REQUEST_PATH" => "/stylesheets/hello.css",
