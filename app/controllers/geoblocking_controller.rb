@@ -7,7 +7,7 @@ class GeoblockingController < ApplicationController
     respond_to do |format|
       if SiteSetting.geoblocking_blocked_redirect.present?
         format.html do
-          redirect_to SiteSetting.geoblocking_blocked_redirect
+          redirect_to SiteSetting.geoblocking_blocked_redirect, allow_other_host: true
         end
       else
         format.html do
