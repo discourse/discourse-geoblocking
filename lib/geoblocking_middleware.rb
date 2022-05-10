@@ -6,10 +6,11 @@ class GeoblockingMiddleware
   end
 
   def call(env)
+    env_state = env.clone
     if SiteSetting.geoblocking_enabled && not_admin(env) && check_route(env) && is_blocked(env)
-      GeoblockingController.action('blocked').call(env)
+      GeoblockingController.action('blocked').call(env_state)
     else
-      @app.call(env)
+      @app.call(env_state)
     end
   end
 
