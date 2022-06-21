@@ -16,7 +16,7 @@ class GeoblockingController < ApplicationController
         end
       end
       format.json do
-        render json: { errors: [I18n.t('geoblocking.blocked')] }
+        render json: { errors: [I18n.t('geoblocking.blocked')] }, status: :forbidden
       end
       format.all do
         head :forbidden

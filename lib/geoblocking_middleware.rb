@@ -6,20 +6,19 @@ class GeoblockingMiddleware
   end
 
   def call(env)
-    env_state = env.clone
     if SiteSetting.geoblocking_enabled && not_admin(env) && check_route(env) && is_blocked(env)
-      GeoblockingController.action('blocked').call(env_state)
+      GeoblockingController.action('blocked').call(env)
     else
-      @app.call(env_state)
+      @app.call(env)
     end
   end
 
   private
 
   def not_admin(env)
-    user = CurrentUser.lookup_from_env(env)
+    user = CurrentUser.lookup_from_env(env.clone)
     user.nil? || !user.admin?
-  rescue Discourse::InvalidAccess
+  rescue Discourse::InvalidAccess, Discourse::ReadOnly
     true
   end
 
