@@ -16,7 +16,7 @@ class GeoblockingMiddleware
   private
 
   def not_admin(env)
-    user = CurrentUser.lookup_from_env(env.clone)
+    user = CurrentUser.lookup_from_env(env)
     user.nil? || !user.admin?
   rescue Discourse::InvalidAccess, Discourse::ReadOnly
     true
