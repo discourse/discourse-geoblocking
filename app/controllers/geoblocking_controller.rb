@@ -6,21 +6,20 @@ class GeoblockingController < ApplicationController
   def blocked
     respond_to do |format|
       if SiteSetting.geoblocking_blocked_redirect.present?
-        format.html do
-          redirect_to SiteSetting.geoblocking_blocked_redirect, allow_other_host: true
-        end
+        format.html { redirect_to SiteSetting.geoblocking_blocked_redirect, allow_other_host: true }
       else
         format.html do
           append_view_path(File.expand_path("../../views", __FILE__))
-          render :blocked, layout: 'no_ember', locals: { hide_auth_buttons: true }, status: :forbidden
+          render :blocked,
+                 layout: "no_ember",
+                 locals: {
+                   hide_auth_buttons: true,
+                 },
+                 status: :forbidden
         end
       end
-      format.json do
-        render json: { errors: [I18n.t('geoblocking.blocked')] }, status: :forbidden
-      end
-      format.all do
-        head :forbidden
-      end
+      format.json { render json: { errors: [I18n.t("geoblocking.blocked")] }, status: :forbidden }
+      format.all { head :forbidden }
     end
   end
 end
