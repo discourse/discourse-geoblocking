@@ -1,12 +1,24 @@
 # frozen_string_literal: true
 
 class GeoblockingMiddleware
+  STATIC_PATHS ||= %w[assets/ images/ uploads/ stylesheets/ service-worker/]
+
+  ALLOWED_PATHS ||= %w[
+    srv/status
+    u/admin-login
+    users/admin-login
+    session/email-login
+    session/csrf
+    logs/report_js_error
+    manifest.webmanifest
+  ]
+
   def initialize(app, _options = {})
     @app = app
   end
 
   def call(env)
-    if SiteSetting.geoblocking_enabled && not_admin(env) && check_route(env) && is_blocked(env)
+    if SiteSetting.geoblocking_enabled && is_blocked?(env)
       GeoblockingController.action("blocked").call(env)
     else
       @app.call(env)
@@ -15,33 +27,44 @@ class GeoblockingMiddleware
 
   private
 
-  def not_admin(env)
-    user = CurrentUser.lookup_from_env(env)
-    user.nil? || !user.admin?
+  def is_admin?(env)
+    CurrentUser.lookup_from_env(env)&.admin?
   rescue Discourse::InvalidAccess, Discourse::ReadOnly
-    true
+    false
   end
 
-  def check_route(env)
-    return false if is_static(env["REQUEST_PATH"])
-
-    %w[
-      srv/status
-      u/admin-login
-      users/admin-login
-      session/email-login
-      session/csrf
-      logs/report_js_error
-      manifest.webmanifest
-    ].each { |route| return false if env["REQUEST_URI"].include?(route) }
-
-    true
+  def absolute_path(path)
+    File.join("/", GlobalSetting.relative_url_root.to_s, path)
   end
 
-  def is_blocked(env)
+  def starts_with_any?(string, prefixes)
+    string.starts_with?(*prefixes.map { |prefix| absolute_path(prefix) })
+  end
+
+  def matches_any?(string, paths)
+    paths.any? { |path| string == absolute_path(path) }
+  end
+
+  def is_static?(path)
+    path.present? && starts_with_any?(path, STATIC_PATHS)
+  end
+
+  def is_allowed?(path)
+    return false if path.blank?
+
+    matches_any?(path, ALLOWED_PATHS) ||
+      matches_any?(path, SiteSetting.geoblocking_allowed_paths.split("|"))
+  end
+
+  def is_blocked?(env)
+    return false if is_admin?(env)
+    return false if is_static?(env["PATH_INFO"])
+    return false if is_allowed?(env["PATH_INFO"])
+
     default_blocked =
       SiteSetting.geoblocking_allowed_countries.present? ||
         SiteSetting.geoblocking_allowed_geoname_ids.present?
+
     request = Rack::Request.new(env)
 
     info = DiscourseIpInfo.get(request.ip)
@@ -64,15 +87,5 @@ class GeoblockingMiddleware
     end
 
     false
-  end
-
-  def is_static(path)
-    return false if path.blank?
-
-    path.starts_with?("#{GlobalSetting.relative_url_root}/assets/") ||
-      path.starts_with?("#{GlobalSetting.relative_url_root}/images/") ||
-      path.starts_with?("#{GlobalSetting.relative_url_root}/uploads/") ||
-      path.starts_with?("#{GlobalSetting.relative_url_root}/stylesheets/") ||
-      path.starts_with?("#{GlobalSetting.relative_url_root}/service-worker")
   end
 end

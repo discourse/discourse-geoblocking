@@ -19,3 +19,7 @@ plugins:
     type: list
     default: ""
     list_type: compact
+  geoblocking_allowed_paths:
+    type: list
+    default: ""
+    list_type: compact
