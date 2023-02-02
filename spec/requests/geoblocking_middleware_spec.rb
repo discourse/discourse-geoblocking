@@ -13,7 +13,7 @@ describe GeoblockingMiddleware do
       "HTTP_HOST" => "http://test.com",
       "HTTP_USER_AGENT" =>
         "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36",
-      "REQUEST_URI" => "/path?bla=1",
+      "PATH_INFO" => File.join("/", SecureRandom.alphanumeric),
       "REQUEST_METHOD" => "GET",
       "HTTP_ACCEPT" =>
         "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
@@ -77,11 +77,24 @@ describe GeoblockingMiddleware do
       expect(status).to eq(403)
     end
 
-    it "does not block static resources" do
-      env = make_env("REQUEST_PATH" => "/stylesheets/hello.css", "REMOTE_ADDR" => gb_ip)
+    it "does not block allowed static resources" do
+      SiteSetting.geoblocking_blocked_countries = "GB"
+
+      env = make_env("REMOTE_ADDR" => gb_ip)
 
       status, _ = subject.call(env)
-      expect(status).to eq(200)
+      expect(status).to eq(403)
+
+      %w[assets images uploads stylesheets service-worker].each do |path|
+        env =
+          make_env(
+            "PATH_INFO" => File.join("/", path, SecureRandom.alphanumeric),
+            "REMOTE_ADDR" => gb_ip,
+          )
+
+        status, _ = subject.call(env)
+        expect(status).to eq(200)
+      end
     end
 
     it "does not block ip if geoname ids are missing" do
@@ -91,6 +104,15 @@ describe GeoblockingMiddleware do
 
       SiteSetting.geoblocking_blocked_countries = "US"
       env = make_env("REMOTE_ADDR" => gb_ip)
+
+      status, _ = subject.call(env)
+      expect(status).to eq(200)
+    end
+
+    it "allows specific paths through the geoblocking_allowed_paths site setting" do
+      SiteSetting.geoblocking_blocked_countries = "GB"
+      SiteSetting.geoblocking_allowed_paths = "tos"
+      env = make_env("REMOTE_ADDR" => gb_ip, "PATH_INFO" => "/tos")
 
       status, _ = subject.call(env)
       expect(status).to eq(200)
@@ -115,9 +137,18 @@ describe GeoblockingMiddleware do
         expect(status).to eq(403)
       end
 
-      it "never blocks srv/status and admin login routes" do
-        %w[srv/status u/admin-login users/admin-login session/email-login].each do |route|
-          env = make_env("REMOTE_ADDR" => us_ip, "REQUEST_URI" => route)
+      %w[
+        srv/status
+        u/admin-login
+        users/admin-login
+        session/email-login
+        session/csrf
+        logs/report_js_error
+        manifest.webmanifest
+      ].each do |path|
+        it "never blocks '#{path}'" do
+          env = make_env("REMOTE_ADDR" => us_ip, "PATH_INFO" => File.join("/", path))
+
           status, _ = subject.call(env)
           expect(status).to eq(200)
         end
@@ -133,7 +164,7 @@ describe GeoblockingMiddleware do
         env =
           make_env(
             "REMOTE_ADDR" => us_ip,
-            "REQUEST_URI" => "/",
+            "PATH_INFO" => "/",
             "HTTP_COOKIE" => "_t=#{token.unhashed_auth_token}",
           )
         status, _ = subject.call(env)
@@ -150,7 +181,7 @@ describe GeoblockingMiddleware do
         env =
           make_env(
             "REMOTE_ADDR" => us_ip,
-            "REQUEST_URI" => "/",
+            "PATH_INFO" => "/",
             "HTTP_COOKIE" => "_t=#{token.unhashed_auth_token}",
           )
         status, _ = subject.call(env)
