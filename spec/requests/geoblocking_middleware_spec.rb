@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# rubocop:disable RSpec/NamedSubject
 
 require "rails_helper"
 
@@ -6,7 +7,7 @@ describe GeoblockingMiddleware do
   let(:app) { lambda { |env| [200, { "Content-Type" => "text/plain" }, ["OK"]] } }
   let(:gb_ip) { "81.2.69.142" }
   let(:us_ip) { "216.160.83.56" }
-  subject { described_class.new(app) }
+  subject { described_class.new(app) } # rubocop:disable Rspec/LeadingSubject
 
   def make_env(opts = {})
     {
