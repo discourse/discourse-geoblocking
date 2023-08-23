@@ -1,7 +1,7 @@
 {
   "name": "discourse-geoblocking",
   "version": "0.1.0",
-  "repository": "https://github.com/discourse-org/discourse-geoblocking",
+  "repository": "https://github.com/discourse/discourse-geoblocking",
   "author": "Discourse",
   "license": "MIT",
   "devDependencies": {

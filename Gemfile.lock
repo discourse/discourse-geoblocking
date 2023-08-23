@@ -1,39 +1,53 @@
+GIT
+  remote: https://github.com/ruby-syntax-tree/syntax_tree.git
+  revision: 8eacaca33b63b14ec472b36c2cdaaebd295cb47c
+  branch: main
+  specs:
+    syntax_tree (6.1.1)
+      prettier_print (>= 1.2.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
     ast (2.4.2)
+    base64 (0.1.1)
     json (2.6.3)
-    parallel (1.22.1)
-    parser (3.2.0.0)
+    language_server-protocol (3.17.0.3)
+    parallel (1.23.0)
+    parser (3.2.2.3)
       ast (~> 2.4.1)
-    prettier_print (1.2.0)
+      racc
+    prettier_print (1.2.1)
+    racc (1.7.1)
     rainbow (3.1.1)
-    regexp_parser (2.6.2)
-    rexml (3.2.5)
-    rubocop (1.44.0)
+    regexp_parser (2.8.1)
+    rexml (3.2.6)
+    rubocop (1.56.1)
+      base64 (~> 0.1.1)
       json (~> 2.3)
+      language_server-protocol (>= 3.17.0)
       parallel (~> 1.10)
-      parser (>= 3.2.0.0)
+      parser (>= 3.2.2.3)
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 1.8, < 3.0)
       rexml (>= 3.2.5, < 4.0)
-      rubocop-ast (>= 1.24.1, < 2.0)
+      rubocop-ast (>= 1.28.1, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 3.0)
-    rubocop-ast (1.24.1)
-      parser (>= 3.1.1.0)
-    rubocop-capybara (2.17.0)
+    rubocop-ast (1.29.0)
+      parser (>= 3.2.1.0)
+    rubocop-capybara (2.18.0)
       rubocop (~> 1.41)
-    rubocop-discourse (3.0.3)
+    rubocop-discourse (3.3.0)
       rubocop (>= 1.1.0)
       rubocop-rspec (>= 2.0.0)
-    rubocop-rspec (2.18.1)
+    rubocop-factory_bot (2.23.1)
+      rubocop (~> 1.33)
+    rubocop-rspec (2.23.2)
       rubocop (~> 1.33)
       rubocop-capybara (~> 2.17)
-    ruby-progressbar (1.11.0)
-    syntax_tree (5.2.0)
-      prettier_print (>= 1.2.0)
-    syntax_tree-disable_ternary (1.0.0)
+      rubocop-factory_bot (~> 2.22)
+    ruby-progressbar (1.13.0)
     unicode-display_width (2.4.2)
 
 PLATFORMS
@@ -46,8 +60,7 @@ PLATFORMS
 
 DEPENDENCIES
   rubocop-discourse
-  syntax_tree
-  syntax_tree-disable_ternary
+  syntax_tree!
 
 BUNDLED WITH
    2.3.16
