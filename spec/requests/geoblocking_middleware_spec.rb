@@ -1,13 +1,13 @@
 # frozen_string_literal: true
-# rubocop:disable RSpec/NamedSubject
 
 require "rails_helper"
 
 describe GeoblockingMiddleware do
+  subject(:middleware) { described_class.new(app) }
+
   let(:app) { lambda { |env| [200, { "Content-Type" => "text/plain" }, ["OK"]] } }
   let(:gb_ip) { "81.2.69.142" }
   let(:us_ip) { "216.160.83.56" }
-  subject { described_class.new(app) } # rubocop:disable Rspec/LeadingSubject
 
   def make_env(opts = {})
     {
@@ -31,7 +31,7 @@ describe GeoblockingMiddleware do
 
       env = make_env("REMOTE_ADDR" => gb_ip)
 
-      status, _ = subject.call(env)
+      status, _ = middleware.call(env)
       expect(status).to eq(200)
     end
 
@@ -40,21 +40,21 @@ describe GeoblockingMiddleware do
 
       env = make_env("REMOTE_ADDR" => us_ip)
 
-      status, _ = subject.call(env)
+      status, _ = middleware.call(env)
       expect(status).to eq(200)
     end
 
     it "does not block US IP by default" do
       env = make_env("REMOTE_ADDR" => us_ip)
 
-      status, _ = subject.call(env)
+      status, _ = middleware.call(env)
       expect(status).to eq(200)
     end
 
     it "does not block UK IP by default" do
       env = make_env("REMOTE_ADDR" => gb_ip)
 
-      status, _ = subject.call(env)
+      status, _ = middleware.call(env)
       expect(status).to eq(200)
     end
 
@@ -62,7 +62,7 @@ describe GeoblockingMiddleware do
       SiteSetting.geoblocking_blocked_countries = "GB"
       env = make_env("REMOTE_ADDR" => gb_ip)
 
-      status, _ = subject.call(env)
+      status, _ = middleware.call(env)
       expect(status).to eq(403)
     end
 
@@ -74,7 +74,7 @@ describe GeoblockingMiddleware do
       SiteSetting.geoblocking_blocked_countries = "GB"
       env = make_env("REMOTE_ADDR" => gb_ip)
 
-      status, _ = subject.call(env)
+      status, _ = middleware.call(env)
       expect(status).to eq(403)
     end
 
@@ -83,7 +83,7 @@ describe GeoblockingMiddleware do
 
       env = make_env("REMOTE_ADDR" => gb_ip)
 
-      status, _ = subject.call(env)
+      status, _ = middleware.call(env)
       expect(status).to eq(403)
 
       %w[assets images uploads stylesheets service-worker].each do |path|
@@ -93,7 +93,7 @@ describe GeoblockingMiddleware do
             "REMOTE_ADDR" => gb_ip,
           )
 
-        status, _ = subject.call(env)
+        status, _ = middleware.call(env)
         expect(status).to eq(200)
       end
     end
@@ -106,7 +106,7 @@ describe GeoblockingMiddleware do
       SiteSetting.geoblocking_blocked_countries = "US"
       env = make_env("REMOTE_ADDR" => gb_ip)
 
-      status, _ = subject.call(env)
+      status, _ = middleware.call(env)
       expect(status).to eq(200)
     end
 
@@ -115,7 +115,7 @@ describe GeoblockingMiddleware do
       SiteSetting.geoblocking_allowed_paths = "tos"
       env = make_env("REMOTE_ADDR" => gb_ip, "PATH_INFO" => "/tos")
 
-      status, _ = subject.call(env)
+      status, _ = middleware.call(env)
       expect(status).to eq(200)
     end
   end
@@ -127,14 +127,14 @@ describe GeoblockingMiddleware do
       it "does not block allowlisted ips" do
         env = make_env("REMOTE_ADDR" => gb_ip)
 
-        status, _ = subject.call(env)
+        status, _ = middleware.call(env)
         expect(status).to eq(200)
       end
 
       it "blocks ip not present in allowlist" do
         env = make_env("REMOTE_ADDR" => us_ip)
 
-        status, _ = subject.call(env)
+        status, _ = middleware.call(env)
         expect(status).to eq(403)
       end
 
@@ -150,7 +150,7 @@ describe GeoblockingMiddleware do
         it "never blocks '#{path}'" do
           env = make_env("REMOTE_ADDR" => us_ip, "PATH_INFO" => File.join("/", path))
 
-          status, _ = subject.call(env)
+          status, _ = middleware.call(env)
           expect(status).to eq(200)
         end
       end
@@ -168,7 +168,7 @@ describe GeoblockingMiddleware do
             "PATH_INFO" => "/",
             "HTTP_COOKIE" => "_t=#{token.unhashed_auth_token}",
           )
-        status, _ = subject.call(env)
+        status, _ = middleware.call(env)
         expect(status).to eq(200)
       end
 
@@ -185,7 +185,7 @@ describe GeoblockingMiddleware do
             "PATH_INFO" => "/",
             "HTTP_COOKIE" => "_t=#{token.unhashed_auth_token}",
           )
-        status, _ = subject.call(env)
+        status, _ = middleware.call(env)
         expect(status).to eq(403)
       end
 
@@ -195,7 +195,7 @@ describe GeoblockingMiddleware do
         it "redirects on blocked request" do
           env = make_env("REMOTE_ADDR" => us_ip)
 
-          response = subject.call(env)
+          response = middleware.call(env)
           expect(response.first).to eq(302)
           expect(response.second["Location"]).to eq(SiteSetting.geoblocking_blocked_redirect)
         end
@@ -207,11 +207,11 @@ describe GeoblockingMiddleware do
 
       it "does not block any ips" do
         env = make_env("REMOTE_ADDR" => us_ip)
-        status, _ = subject.call(env)
+        status, _ = middleware.call(env)
         expect(status).to eq(200)
 
         env = make_env("REMOTE_ADDR" => gb_ip)
-        status, _ = subject.call(env)
+        status, _ = middleware.call(env)
         expect(status).to eq(200)
       end
     end
@@ -222,11 +222,11 @@ describe GeoblockingMiddleware do
       SiteSetting.geoblocking_blocked_geoname_ids = "2643743" # London, GB
 
       env = make_env("REMOTE_ADDR" => us_ip)
-      status, _ = subject.call(env)
+      status, _ = middleware.call(env)
       expect(status).to eq(200)
 
       env = make_env("REMOTE_ADDR" => gb_ip)
-      status, _ = subject.call(env)
+      status, _ = middleware.call(env)
       expect(status).to eq(403)
     end
   end
@@ -236,11 +236,11 @@ describe GeoblockingMiddleware do
       SiteSetting.geoblocking_allowed_geoname_ids = "2643743" # London, GB
 
       env = make_env("REMOTE_ADDR" => us_ip)
-      status, _ = subject.call(env)
+      status, _ = middleware.call(env)
       expect(status).to eq(403)
 
       env = make_env("REMOTE_ADDR" => gb_ip)
-      status, _ = subject.call(env)
+      status, _ = middleware.call(env)
       expect(status).to eq(200)
     end
   end
@@ -260,7 +260,7 @@ describe GeoblockingMiddleware do
           },
         )
 
-      status, _ = subject.call(env)
+      status, _ = middleware.call(env)
       expect(status).to eq(200)
     end
   end
