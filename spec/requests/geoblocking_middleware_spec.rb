@@ -185,6 +185,7 @@ describe GeoblockingMiddleware do
             "PATH_INFO" => "/",
             "HTTP_COOKIE" => "_t=#{token.unhashed_auth_token}",
           )
+        ActionDispatch::Cookies::CookieJar.any_instance.stubs(:encrypted).returns({})
         status, _ = middleware.call(env)
         expect(status).to eq(403)
       end
