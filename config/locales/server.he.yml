@@ -1,0 +1,17 @@
+# WARNING: Never edit this file.
+# It will be overwritten when translations are pulled from Crowdin.
+#
+# To work with us on translations, join this project:
+# https://translate.discourse.org/
+
+he:
+  site_settings:
+    geoblocking_enabled: "הגבלת גישה לתוכן לפי המיקום הגאוגרפי של המשתמש"
+    geoblocking_blocked_redirect: "להפנות בקשות חסומות לכתובת זאת. יופיע דף שגיאה אם זה לא מוגדר"
+    geoblocking_blocked_countries: "רשימת קודים של מדינות (לפי ISO 3166) חסומות"
+    geoblocking_allowed_countries: "רשימת קודים של מדינות (לפי ISO 3166) מורשות. ההגדרות geoblocking_blocked_countries (מדינות חסומות) ו־geoblocking_blocked_geoname_ids (מזהים גאוגרפיים חסומים) לא תקפות אם הגדרת האתר הזאת קיימת"
+    geoblocking_blocked_geoname_ids: "רשימה של מזהי Geoname חסומים"
+    geoblocking_allowed_geoname_ids: "רשימת קודים של מזהי Geoname מורשים. ההגדרות geoblocking_blocked_countries (מדינות חסומות) ו־geoblocking_blocked_geoname_ids (מזהים גאוגרפיים חסומים) לא תקפות אם הגדרת האתר הזאת קיימת"
+    geoblocking_allowed_paths: "רשימת כתובות האתרים המורשות ללא קשר למיקום הגיאוגרפי של המשתמש. תבנית: לוכסן פתיחה נוסף אוטומטית, התאמה מדויקת."
+  geoblocking:
+    blocked: "הגישה אסורה לפי המיקום."
