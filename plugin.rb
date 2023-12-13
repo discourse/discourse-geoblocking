@@ -4,7 +4,6 @@
 # about: Restricts access to content based upon the user's geographical location (IP location).
 # version: 0.1
 # url: https://github.com/discourse/discourse-geoblocking
-# transpile_js: true
 
 enabled_site_setting :geoblocking_enabled
 
