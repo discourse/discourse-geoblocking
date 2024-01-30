@@ -5,3 +5,13 @@
 # https://translate.discourse.org/
 
 zh_CN:
+  site_settings:
+    geoblocking_enabled: "根据用户的地理位置限制对内容的访问"
+    geoblocking_blocked_redirect: "将阻止的请求重定向到此 URL。如果未设置，将显示错误页面"
+    geoblocking_blocked_countries: "阻止的国家/地区代码 (ISO 3166) 的列表"
+    geoblocking_allowed_countries: "允许的国家/地区代码 (ISO 3166) 的列表。如果存在此站点设置，则忽略 geoblocking_blocked_countries 和 geoblocking_blocked_geoname_ids"
+    geoblocking_blocked_geoname_ids: "阻止的地名 ID 列表"
+    geoblocking_allowed_geoname_ids: "允许的地名 ID 的列表。如果存在此站点设置，则忽略 geoblocking_blocked_countries 和 geoblocking_blocked_geoname_ids"
+    geoblocking_allowed_paths: "无论用户的地理位置如何，都允许的 URL 列表。格式：自动添加前导斜杠，完全匹配。"
+  geoblocking:
+    blocked: "根据位置禁止访问。"

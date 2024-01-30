@@ -5,3 +5,13 @@
 # https://translate.discourse.org/
 
 tr_TR:
+  site_settings:
+    geoblocking_enabled: "Kullanıcının coğrafi konumuna göre içeriğe erişimi kısıtla"
+    geoblocking_blocked_redirect: "Engellenen talepleri bu URL'ye yönlendirin. Bu ayarlanmamışsa bir hata sayfası gösterilir"
+    geoblocking_blocked_countries: "Engellenen ülke kodlarının listesi (ISO 3166)"
+    geoblocking_allowed_countries: "İzin verilen ülke kodlarının listesi (ISO 3166). geoblocking_blocked_countries ve geoblocking_blocked_geoname_ids bu site ayarı mevcutsa yok sayılır"
+    geoblocking_blocked_geoname_ids: "Engellenen Geoname Kimliklerinin Listesi"
+    geoblocking_allowed_geoname_ids: "İzin verilen Geoname Kimliklerinin listesi. geoblocking_blocked_countries ve geoblocking_blocked_geoname_ids bu site ayarı mevcutsa yok sayılır"
+    geoblocking_allowed_paths: "Kullanıcının coğrafi konumu ne olursa olsun izin verilen URL'lerin listesi. Format: baştaki eğik çizgi otomatik olarak eklenir, tam eşleşme."
+  geoblocking:
+    blocked: "Konuma bağlı erişim yasağı."

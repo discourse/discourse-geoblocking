@@ -5,3 +5,13 @@
 # https://translate.discourse.org/
 
 fi:
+  site_settings:
+    geoblocking_enabled: "Rajoita pääsyä sisältöön käyttäjän maantieteellisen sijainnin perusteella"
+    geoblocking_blocked_redirect: "Uudelleenohjaa estetyt pyynnöt tähän URL-osoitteeseen. Virhesivu näytetään, jos tätä ei ole määritetty."
+    geoblocking_blocked_countries: "Luettelo estetyistä maakoodeista (ISO 3166)."
+    geoblocking_allowed_countries: "Luettelo sallituista maakoodeista (ISO 3166). geoblocking_blocked_countries ja geoblocking_blocked_geonaname_ids ohitetaan, jos tämä sivustoasetus on käytössä."
+    geoblocking_blocked_geoname_ids: "Luettelo estetyistä Geonaname-tunnuksista"
+    geoblocking_allowed_geoname_ids: "Luettelo sallituista Geoname-tunnuksista. geoblocking_blocked_countries ja geoblocking_blocked_geonaname_ids ohitetaan, jos tämä sivustoasetus on käytössä."
+    geoblocking_allowed_paths: "Luettelo URL-osoitteista, jotka ovat sallittuja käyttäjän maantieteellisestä sijainnista riippumatta. Muoto: alkuun lisätään vinoviiva automaattisesti, tarkka vastaavuus."
+  geoblocking:
+    blocked: "Pääsy kielletty sijainnin perusteella."

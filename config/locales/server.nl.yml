@@ -5,3 +5,13 @@
 # https://translate.discourse.org/
 
 nl:
+  site_settings:
+    geoblocking_enabled: "Toegang tot inhoud beperken op basis van de geografische locatie van de gebruiker"
+    geoblocking_blocked_redirect: "Stuur geblokkeerde verzoeken door naar deze URL. Er wordt een foutpagina weergegeven als dit niet is ingesteld"
+    geoblocking_blocked_countries: "Lijst van landcodes (ISO 3166) die geblokkeerd zijn"
+    geoblocking_allowed_countries: "Lijst van landcodes (ISO 3166) die zijn toegestaan. geoblocking_blocked_countries en geoblocking_blocked_geoname_ids worden genegeerd als deze site-instelling aanwezig is."
+    geoblocking_blocked_geoname_ids: "Lijst van geblokkeerde Geoname-ID's"
+    geoblocking_allowed_geoname_ids: "Lijst van Geoname-ID's die zijn toegestaan. geoblocking_blocked_countries en geoblocking_blocked_geoname_ids worden genegeerd als deze site-instelling aanwezig is."
+    geoblocking_allowed_paths: "Lijst van URL's die zijn toegestaan ongeacht de geografische locatie van de gebruiker. Indeling: voorlopende schuine streep wordt automatisch toegevoegd, exacte overeenkomst."
+  geoblocking:
+    blocked: "Toegang verboden op basis van locatie."
