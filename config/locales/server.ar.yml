@@ -5,3 +5,13 @@
 # https://translate.discourse.org/
 
 ar:
+  site_settings:
+    geoblocking_enabled: "تقييد الوصول إلى المحتوى بناءً على الموقع الجغرافي للمستخدم"
+    geoblocking_blocked_redirect: "إعادة توجيه الطلبات المحظورة إلى عنوان URL هذا. سيتم عرض صفحة خطأ إذا لم يتم تعيين هذا"
+    geoblocking_blocked_countries: "قائمة رموز الدول (ISO 3166) المحظورة"
+    geoblocking_allowed_countries: "قائمة رموز الدول (IOS 3166) المسموح بها. يتم تجاهل Geoblocking_blocked_countries وGeoblocking_blocked_geoname_ids في حالة وجود إعداد الموقع هذا"
+    geoblocking_blocked_geoname_ids: "قائمة معرِّفات Geoname المحظورة"
+    geoblocking_allowed_geoname_ids: "قائمة معرِّفات Geoname المسموح بها. يتم تجاهل Geoblocking_blocked_countries وGeoblocking_blocked_geoname_ids في حالة وجود إعداد الموقع هذا"
+    geoblocking_allowed_paths: "قائمة عناوين URL المسموح بها بغض النظر عن الموقع الجغرافي للمستخدم. التنسيق: تتم إضافة شرطة مائلة بادئة تلقائيًا في حالة المطابقة التامة."
+  geoblocking:
+    blocked: "الوصول ممنوع بناءً على الموقع."

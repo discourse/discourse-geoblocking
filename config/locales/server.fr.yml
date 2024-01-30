@@ -5,3 +5,13 @@
 # https://translate.discourse.org/
 
 fr:
+  site_settings:
+    geoblocking_enabled: "Restreindre l'accès au contenu en fonction de la situation géographique de l'utilisateur"
+    geoblocking_blocked_redirect: "Rediriger les requêtes bloquées vers cette URL. Une page d'erreur sera affichée si elle n'est pas définie"
+    geoblocking_blocked_countries: "Liste des codes de pays (ISO 3166) qui sont bloqués"
+    geoblocking_allowed_countries: "Liste des codes de pays (ISO 3166) autorisés. geoblocking_blocked_countries et geoblocking_blocked_geoname_ids sont ignorés si ce paramètre de site est présent."
+    geoblocking_blocked_geoname_ids: "Liste des identifiants Geoname bloqués"
+    geoblocking_allowed_geoname_ids: "Liste des identifiants de noms géographiques autorisés. geoblocking_blocked_countries et geoblocking_blocked_geoname_ids sont ignorés si ce paramètre de site est présent"
+    geoblocking_allowed_paths: "Liste des URL autorisées quelle que soit la situation géographique de l'utilisateur. Format : barre oblique ajoutée automatiquement, correspondance exacte."
+  geoblocking:
+    blocked: "Accès interdit en fonction de la localisation."

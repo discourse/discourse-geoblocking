@@ -5,3 +5,13 @@
 # https://translate.discourse.org/
 
 ja:
+  site_settings:
+    geoblocking_enabled: "ユーザーの地理的位置に基づいてコンテンツへのアクセスを制限する"
+    geoblocking_blocked_redirect: "ブロックされたリクエストをこの URL にリダイレクトする。未設定の場合はエラーページが表示されます。"
+    geoblocking_blocked_countries: "ブロックされている国コード (ISO 3166) のリスト"
+    geoblocking_allowed_countries: "許可されている国コード (ISO 3166) のリスト。このサイト設定が存在する場合、geoblocking_blocked_countries と geoblocking_blocked_geoname_ids は無視されます。"
+    geoblocking_blocked_geoname_ids: "ブロックされている Geoname ID のリスト"
+    geoblocking_allowed_geoname_ids: "許可されている Geoname ID のリスト。このサイト設定が存在する場合、geoblocking_blocked_countries と geoblocking_blocked_geoname_ids は無視されます。"
+    geoblocking_allowed_paths: "ユーザーの地理的位置に関係なく許可されている URL のリスト。形式: 先頭のスラッシュが自動的に追加されます。完全一致です。"
+  geoblocking:
+    blocked: "場所に基づいてアクセスが禁止されています。"
