@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class GeoblockingController < ApplicationController
+  requires_plugin DiscourseGeoblocking::PLUGIN_NAME
+
   skip_before_action :check_xhr, :preload_json, :redirect_to_login_if_required
 
   def blocked

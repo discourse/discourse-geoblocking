@@ -7,8 +7,9 @@
 
 enabled_site_setting :geoblocking_enabled
 
-require_relative("lib/geoblocking_middleware")
+require_relative "lib/geoblocking_middleware"
 
+# rubocop:disable Discourse/Plugins/UsePluginInstanceOn
 DiscourseEvent.on(:after_initializers) do
   # Must be added after DebugExceptions so that postgres errors trigger failover
   middleware =
@@ -20,6 +21,7 @@ DiscourseEvent.on(:after_initializers) do
 
   Rails.configuration.middleware.insert_after(middleware, GeoblockingMiddleware)
 end
+# rubocop:enable Discourse/Plugins/UsePluginInstanceOn
 
 module ::DiscourseGeoblocking
   COUNTRY_CODES = [
@@ -277,8 +279,6 @@ module ::DiscourseGeoblocking
 end
 
 after_initialize do
-  require_relative("app/controllers/geoblocking_controller")
-
   module ::DiscourseGeoblocking
     PLUGIN_NAME = "discourse-geoblocking"
 
@@ -322,6 +322,8 @@ after_initialize do
         .to_set
     end
   end
+
+  require_relative "app/controllers/geoblocking_controller"
 
   on(:site_setting_changed) do |name, old_value, new_value|
     if %i[
