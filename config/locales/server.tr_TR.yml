@@ -1,10 +1,4 @@
-# WARNING: Never edit this file.
-# It will be overwritten when translations are pulled from Crowdin.
-#
-# To work with us on translations, join this project:
-# https://translate.discourse.org/
-
-tr_TR:
+tr:
   site_settings:
     geoblocking_enabled: "Kullanıcının coğrafi konumuna göre içeriğe erişimi kısıtla"
     geoblocking_blocked_redirect: "Engellenen talepleri bu URL'ye yönlendirin. Bu ayarlanmamışsa bir hata sayfası gösterilir"

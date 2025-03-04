@@ -1,10 +1,4 @@
-# WARNING: Never edit this file.
-# It will be overwritten when translations are pulled from Crowdin.
-#
-# To work with us on translations, join this project:
-# https://translate.discourse.org/
-
-zh_CN:
+zh-CN:
   site_settings:
     geoblocking_enabled: "根据用户的地理位置限制对内容的访问"
     geoblocking_blocked_redirect: "将阻止的请求重定向到此 URL。如果未设置，将显示错误页面"
