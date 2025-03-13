@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 class GeoblockingMiddleware
-  STATIC_PATHS ||= %w[assets/ images/ uploads/ stylesheets/ service-worker/]
+  STATIC_PATHS = %w[assets/ images/ uploads/ stylesheets/ service-worker/]
 
-  ALLOWED_PATHS ||= %w[
+  ALLOWED_PATHS = %w[
     srv/status
     u/admin-login
     users/admin-login
