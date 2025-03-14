@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/ruby-syntax-tree/syntax_tree.git
-  revision: 4ffb55a47fafd2c75ea6cbcdeff86b946ffa112d
+  revision: 58a735a7bad5ed5d980b534c1afc501ea09fdfd4
   branch: main
   specs:
     syntax_tree (6.2.0)
@@ -103,4 +103,4 @@ DEPENDENCIES
   syntax_tree!
 
 BUNDLED WITH
-   2.6.5
+   2.6.6
