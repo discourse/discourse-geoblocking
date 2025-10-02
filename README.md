@@ -4,6 +4,8 @@
 
 A Discourse plugin to restrict access to users whose IP matches a given list of [ISO 3166-1 alpha 2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) countries or [Geoname IDs](https://www.geonames.org/).
 
+Powered by MaxMind databases, available from https://www.maxmind.com.
+
 ### Configuration
 
 Site Settings:
