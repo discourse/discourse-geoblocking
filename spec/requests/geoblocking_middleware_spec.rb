@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "rails_helper"
-
 describe GeoblockingMiddleware do
   subject(:middleware) { described_class.new(app) }
 
