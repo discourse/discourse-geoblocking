@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "rails_helper"
-
 describe DiscourseGeoblocking do
   describe ".allowed_countries" do
     it "is reset when site setting changes" do

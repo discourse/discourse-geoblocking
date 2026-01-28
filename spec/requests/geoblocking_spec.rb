@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "rails_helper"
-
 describe GeoblockingController do
   before { SiteSetting.geoblocking_enabled = true }
 
